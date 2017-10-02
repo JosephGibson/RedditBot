@@ -1,16 +1,17 @@
 import praw
 import config
 import time
-import logging
+
 
 
 # A global blank comment list
-comment_list = []
+
 
 
 # The bot login handler 
 
 def bot_login():
+	print("logging in to reddit...")
 	r = praw.Reddit(username = config.username,
 			password = config.password,
 			client_id = config.client_id,
@@ -24,27 +25,27 @@ def bot_login():
 
 def run_bot(r):
 	for comment in r.subreddit('test').comments(limit=10):
-		# To do here
+		if "dog" in comment.body and comment.id not in comment_list:
+			print("Dog comment found")
+			comment.reply("doggies found")
+			comment_list.append(comment.id)
+
 		
 		
 
 
 
 
-logger = logging.getLogger('reddit_crawler')
-hdlr = logging.FileHandler('BotLog.log')
-formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-hdlr.setFormatter(formatter)
-logger.addHandler(hdlr) 
-logger.setLevel(logging.WARNING)
+
 
 #Ensure that the bot is logged in 
 
-r = bot_login() 			
-#while True:
-run_bot(r)
+r = bot_login() 
+comment_list = []
+
+while True:
+		
+	run_bot(r, comment_list)
 
 
 
-
-#Test file edit
